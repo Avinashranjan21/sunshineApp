@@ -3,7 +3,6 @@ package com.avisoft;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -35,7 +34,7 @@ import java.util.List;
  * Created by Avinash on 21-Aug-15.
  */
 public class ForecastFragment extends Fragment {
-    private ArrayAdapter<String>  mForecastAdapter;
+    private ArrayAdapter<String> mForecastAdapter;
 
     public ForecastFragment() {
     }
@@ -50,10 +49,10 @@ public class ForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         String[] data = {
-                "Mon 6/23 - Sunny - 31/17",
-                "Tue 6/24 - Foggy - 21/8",
-                "Wed 6/25 - Cloudy - 22/17",
-                "Thurs 6/26 - Rainy - 18/11",
+                "Mon 6/23 - FAKE - 31/17",
+                "Tue 6/24 - FAKE - 21/8",
+                "Wed 6/25 - FAKE - 22/17",
+                "Thurs 6/26 - FAKE - 18/11",
                 "Fri 6/27 - Foggy - 21/10",
                 "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
                 "Sun 6/29 - Sunny - 20/7"
@@ -73,21 +72,21 @@ public class ForecastFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.forecastfragment,menu);
+        inflater.inflate(R.menu.forecastfragment, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-                        FetchWeatherTask weatherTask = new FetchWeatherTask();
-                        weatherTask.execute("94043");
+            FetchWeatherTask weatherTask = new FetchWeatherTask();
+            weatherTask.execute("827001");
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchWeatherTask extends AsyncTask<String,Void,String[]> {
+    public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
         /* The date/time conversion code is going to be moved outside the asynctask later,
         * so for convenience we're breaking it out into its own method now.
@@ -271,6 +270,12 @@ public class ForecastFragment extends Fragment {
                     } catch (final IOException e) {
                         Log.e("PlaceholderFragment", "Error closing stream", e);
                     }
+
+                    try {
+                        return getWeatherDataFromJson(forecastJsonStr,numDays);
+                    } catch (final JSONException e) {
+                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                    }
                 }
             }
             return null;
@@ -283,8 +288,8 @@ public class ForecastFragment extends Fragment {
             if (result != null) {
                 Log.v("onPostExecute", String.valueOf(result));
                 mForecastAdapter.clear();
-                for(String dayForecastStr : result) {
-                    mForecastAdapter.add(dayForecastStr);
+                for (String dayForecastStr : result) {
+                    mForecastAdapter.addAll(dayForecastStr);
                 }
 
             }
